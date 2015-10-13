@@ -1,5 +1,5 @@
 # MDC context-propagation
-Spring-integration MDC context-propagation proof of concept.
+Spring-integration MDC context-propagation proof of concept.  bb
 [`MDCContextPropagationChannelInterceptor`](https://github.com/golonzovsky/context-propagation/blob/master/src/main/java/org/golonzovsky/MDCContextPropagationChannelInterceptor.java) is made same way as `SecurityContextPropagationChannelInterceptor`. With current implementation they cannot be added simultaniously, due to `ThreadStatePropagationChannelInterceptor` specific.
 
 ## Manual testing
