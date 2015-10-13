@@ -22,7 +22,7 @@ and than 1 call to `http :8383/async/message2 -a user2:pass` to show incorrect u
 2015-10-13 22:06:36.969  INFO 11964 --- [asyncExecutor-4] org.golonzovsky.MessageLoggingService    : [user1] name from context = 'null', message = 'test2'
 ```
 
-**Result:** all messages have `[user1]` in log entries   
+**Result:** all messages have `[user1]` in log entries.    
 **Expected result:** third call (last 3 entries) should have `[user2]`   
 
 ### Using only MDC propagation
@@ -55,4 +55,4 @@ and than 1 call to `http :8383/async/message2 -a user2:pass` to show incorrect u
 2015-10-13 22:21:03.758  INFO 12484 --- [asyncExecutor-4] org.golonzovsky.MessageLoggingService    : [user2] name from context = 'user2', message = 'message2'
 ```
 
-**Result:** 'name from context' is populated properly. MDC context is mixed (in [asyncExecutor-2] entries)
+**Result:** ok. 'name from context' is populated properly. MDC context is mixed (in [asyncExecutor-2] entries)
