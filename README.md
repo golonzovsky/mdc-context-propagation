@@ -6,9 +6,9 @@ Using [httpie](httpie.org) for examples.
 Integration tests to follow when solution will be ready.  
 
 
-### Using no MDC propagation.
-2 calls `http :8383/async/message1 -a user1:pass` to fill thread pool MDC's, and than 1 call to 
-`http :8383/async/message2 -a user2:pass` to show incorrect username in log.  
+### Using no MDC propagation
+2 calls `http :8383/async/message1 -a user1:pass` to fill thread pool MDC's,   
+and than 1 call to `http :8383/async/message2 -a user2:pass` to show incorrect username in log.  
 
 ```
 2015-10-13 22:06:04.068  INFO 11964 --- [asyncExecutor-2] org.golonzovsky.MessageLoggingService    : [user1] name from context = 'null', message = 'test1'
@@ -25,9 +25,9 @@ Integration tests to follow when solution will be ready.
 **Result:** all messages have `user1` in log entries   
 **Expected result:** third call (last 3 entries) should have `user2`   
 
-### Using only MDC propagation.
-2 calls `http :8383/async/message1 -a user1:pass` to fill thread pool MDC's, and than 1 call to 
-`http :8383/async/message2 -a user2:pass` to show incorrect username in log.  
+### Using only MDC propagation
+2 calls `http :8383/async/message1 -a user1:pass` to fill thread pool MDC's,   
+and than 1 call to `http :8383/async/message2 -a user2:pass` to show incorrect username in log.  
 
 ```
 2015-10-13 22:11:59.758  INFO 12148 --- [asyncExecutor-2] org.golonzovsky.MessageLoggingService    : [user1] name from context = 'null', message = 'test1'
