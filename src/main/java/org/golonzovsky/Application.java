@@ -41,14 +41,14 @@ class SecurityConfig {
 
 @RestController
 class ContactRestController {
-  @Autowired ContractRateBusinessService contractRateBusinessService;
-  @Autowired ItineraryPricingGateway pricingGateway;
+  @Autowired MessageLoggingService messageLoggingService;
+  @Autowired AsyncProcessingGateway pricingGateway;
 
   @RequestMapping("/sync/{packageId}")
   String processSync(@PathVariable String packageId) {
     User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     MDC.put("username", principal.getUsername());
-    contractRateBusinessService.searchRates(packageId);
+    messageLoggingService.logMessage(packageId);
     return "ok sync";
   }
 
@@ -56,7 +56,7 @@ class ContactRestController {
   String processAsync(@PathVariable String packageId) {
     User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     MDC.put("username", principal.getUsername());
-    pricingGateway.costPriceAsync(Arrays.asList(packageId, "test1", "test2"));
+    pricingGateway.logMessageAsync(Arrays.asList(packageId, "test1", "test2"));
     return "ok async";
   }
 }

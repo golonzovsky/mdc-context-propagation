@@ -9,14 +9,15 @@ import org.springframework.stereotype.Service;
 /**
  * @author golonzovsky on 10/5/15
  */
-@Service("contractRateBusinessService")
 @Slf4j
-public class ContractRateBusinessService {
+@Service
+public class MessageLoggingService {
 
-  public String searchRates(String packageId){
+  public String logMessage(String message){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String username = authentication == null ? null : ((User) authentication.getPrincipal()).getUsername();
-    log.info("name '{}', package '{}'", username, packageId);
-    return packageId;
+    log.info("name from context = '{}', message = '{}'", username, message);
+
+    return "ok";//returning non-void response to enable blocking gateway call based on aggregator release group strategy
   }
 }

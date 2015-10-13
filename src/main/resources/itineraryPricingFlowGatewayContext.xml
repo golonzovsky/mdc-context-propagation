@@ -5,33 +5,36 @@
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-
                            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-  <task:executor id="pricing-ex"
-                 pool-size="5"
-                 queue-capacity="5"
-                 rejection-policy="CALLER_RUNS"/>
+  <task:executor id="asyncExecutor" pool-size="5" queue-capacity="5" rejection-policy="CALLER_RUNS"/>
 
   <int:gateway id="pricingGateway"
-               service-interface="org.golonzovsky.ItineraryPricingGateway"
+               service-interface="org.golonzovsky.AsyncProcessingGateway"
                default-request-channel="asyncProcess">
-    <int:default-header name="securityContext" expression="T(org.springframework.security.core.context.SecurityContextHolder).getContext()"/>
-    <int:default-header name="mdcContext" expression="T(org.slf4j.MDC).getCopyOfContextMap()"/>
+    <!--
+      initial implementation was based on header population
+      <int:default-header name="securityContext" expression="T(org.springframework.security.core.context.SecurityContextHolder).getContext()"/>
+      <int:default-header name="mdcContext" expression="T(org.slf4j.MDC).getCopyOfContextMap()"/>
+    -->
   </int:gateway>
   <int:logging-channel-adapter level="ERROR" channel="errorChannel"/>
 
   <int:channel id="asyncProcess"/>
-  <int:splitter input-channel="asyncProcess" output-channel="asyncCostPrice"/>
+  <int:splitter input-channel="asyncProcess" output-channel="asyncChannel"/>
 
-  <int:channel id="asyncCostPrice">
-    <int:dispatcher task-executor="pricing-ex" failover="false"/>
+  <int:channel id="asyncChannel">
+    <int:dispatcher task-executor="asyncExecutor" failover="false"/>
+    <int:interceptors>
+      <bean class="org.golonzovsky.MDCContextPropagationChannelInterceptor"/>
+      <!--<bean class="org.golonzovsky.SecurityContextPropagationChannelInterceptor"/>-->
+    </int:interceptors>
   </int:channel>
 
-  <int:service-activator id="calculation" input-channel="asyncCostPrice"
+  <int:service-activator id="calculation" input-channel="asyncChannel"
                          output-channel="aggregateChannel"
-                         ref="contractRateBusinessService"
-                         method="searchRates"/>
+                         ref="messageLoggingService"
+                         method="logMessage"/>
 
   <int:aggregator input-channel="aggregateChannel"/>
 

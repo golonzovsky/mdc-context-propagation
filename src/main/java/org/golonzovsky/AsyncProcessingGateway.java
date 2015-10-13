@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.springframework.messaging.handler.annotation.Payload;
 
-public interface ItineraryPricingGateway {
+public interface AsyncProcessingGateway {
 
-  List<String> costPriceAsync(@Payload List<String> packageIds);
+  List<String> logMessageAsync(@Payload List<String> packageIds);
 }
