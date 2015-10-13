@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+
+                           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+  <task:executor id="pricing-ex"
+                 pool-size="5"
+                 queue-capacity="5"
+                 rejection-policy="CALLER_RUNS"/>
+
+  <int:gateway id="pricingGateway"
+               service-interface="org.golonzovsky.ItineraryPricingGateway"
+               default-request-channel="asyncProcess">
+    <int:default-header name="securityContext" expression="T(org.springframework.security.core.context.SecurityContextHolder).getContext()"/>
+    <int:default-header name="mdcContext" expression="T(org.slf4j.MDC).getCopyOfContextMap()"/>
+  </int:gateway>
+  <int:logging-channel-adapter level="ERROR" channel="errorChannel"/>
+
+  <int:channel id="asyncProcess"/>
+  <int:splitter input-channel="asyncProcess" output-channel="asyncCostPrice"/>
+
+  <int:channel id="asyncCostPrice">
+    <int:dispatcher task-executor="pricing-ex" failover="false"/>
+  </int:channel>
+
+  <int:service-activator id="calculation" input-channel="asyncCostPrice"
+                         output-channel="aggregateChannel"
+                         ref="contractRateBusinessService"
+                         method="searchRates"/>
+
+  <int:aggregator input-channel="aggregateChannel"/>
+
+</beans>
