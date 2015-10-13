@@ -1,8 +1,9 @@
 # MDC context-propagation
 Spring-integration MDC context-propagation proof of concept
 
-## manual testing
-Using [httpie](httpie.org) for examples.
+## Manual testing
+Using [httpie](httpie.org) for examples.  
+Integration tests to follow when solution will be ready.  
 
 
 ### Using no MDC propagation.
