@@ -56,3 +56,21 @@ and than 1 call to `http :8383/async/message2 -a user2:pass` to show incorrect u
 ```
 
 **Result:** ok. 'name from context' is populated properly. MDC context is mixed (in [asyncExecutor-2] entries)
+
+
+### Both MDC and SecurotyContext propagations enabled
+Currenty doesent work, as order is opposite, and casting is failing.
+
+```
+2015-10-13 23:07:13.603 ERROR 13820 --- [nio-8383-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : [user1] Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.ClassCastException: org.springframework.security.authentication.UsernamePasswordAuthenticationToken cannot be cast to java.util.Map] with root cause
+java.lang.ClassCastException: org.springframework.security.authentication.UsernamePasswordAuthenticationToken cannot be cast to java.util.Map
+	at org.golonzovsky.MDCContextPropagationChannelInterceptor.populatePropagatedContext(MDCContextPropagationChannelInterceptor.java:14) ~[classes/:na]
+	at org.springframework.integration.channel.interceptor.ThreadStatePropagationChannelInterceptor.postReceive(ThreadStatePropagationChannelInterceptor.java:71) ~[spring-integration-core-4.2.0.RELEASE.jar:na]
+	at org.springframework.integration.channel.interceptor.ThreadStatePropagationChannelInterceptor.beforeHandle(ThreadStatePropagationChannelInterceptor.java:79) ~[spring-integration-core-4.2.0.RELEASE.jar:na]
+	at org.springframework.integration.channel.AbstractExecutorChannel$MessageHandlingTask.applyBeforeHandle(AbstractExecutorChannel.java:177) ~[spring-integration-core-4.2.0.RELEASE.jar:na]
+	at org.springframework.integration.channel.AbstractExecutorChannel$MessageHandlingTask.run(AbstractExecutorChannel.java:142) ~[spring-integration-core-4.2.0.RELEASE.jar:na]
+	at org.springframework.integration.util.ErrorHandlingTaskExecutor$1.run(ErrorHandlingTaskExecutor.java:55) ~[spring-integration-core-4.2.0.RELEASE.jar:na]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) ~[na:1.8.0_60]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) ~[na:1.8.0_60]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_60]
+```
