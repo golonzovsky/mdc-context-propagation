@@ -26,8 +26,8 @@
   <int:channel id="asyncChannel">
     <int:dispatcher task-executor="asyncExecutor" failover="false"/>
     <int:interceptors>
-      <bean class="org.golonzovsky.MDCContextPropagationChannelInterceptor"/>
-      <!--<bean class="org.golonzovsky.SecurityContextPropagationChannelInterceptor"/>-->
+      <!--<bean class="org.golonzovsky.MDCContextPropagationChannelInterceptor"/>-->
+      <bean class="org.golonzovsky.SecurityContextPropagationChannelInterceptor"/>
     </int:interceptors>
   </int:channel>
 
